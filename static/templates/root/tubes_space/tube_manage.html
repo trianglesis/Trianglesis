@@ -1,0 +1,72 @@
+{% extends "root/main/main.html" %}
+{% block page_title %}{{ SUBJECT }}{% endblock %}
+{% block content %}
+    {% load humanize %}
+    {% load static %}
+    {% load template_simplify %}
+    {% load meme_extras %}
+    {% load service_tags %}
+    {% subject_on_page SUBJECT %}
+    <div style="padding-left: 1%;padding-right: 1%;padding-bottom: 2%">
+        <!-- CONTAINER - 3 COLS -->
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-2">{% left_col_draw %}</div>
+                <div class="col-md-8">
+                    <div style="padding-bottom: 1em;">
+                        <div class="card border-warning">
+                            <div class="card-header">Manage tube "{{ tube.tube }}"
+                                {% if tube.is_private %}
+                                    <span class="badge badge-danger">Private</span>
+                                {% else %}
+                                    <span class="badge badge-success">Public</span>
+                                {% endif %}
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">Tube: {{ tube.tube }}</p>
+                                <p class="card-text">Admin: {{ tube.tube_admin.username }}</p>
+                                <p class="card-text">Members: ({{ tube.tube_members.all|length }}) they are: {% for member in tube.tube_members.all %}{{ member.username }}, {% endfor %}</p>
+                                <p class="card-text">{% if tube.is_private %}Private: - (visible only for members, nobody can join){% else %}Public - visible for all!{% endif %}</p>
+                                <p class="card-text">{% if auth_user in tube.tube_members.all %}You are a Member{% else %}You can join this group{% endif %}</p>
+                                <p class="card-text">{% if auth_user == tube.tube_admin %}You are an admin{% else %}{% endif %}</p>
+                                {% if auth_user in tube.tube_members.all %}
+                                    <a href="{% url 'leave_tube' %}?tube_id={{ tube.id }}" class="btn btn-sm btn-secondary">Leave Tube</a>
+                                {% else %}
+                                    <a href="{% url 'join_tube' %}?tube_id={{ tube.id }}" class="btn btn-sm btn-primary">Join Tube</a>
+                                {% endif %}
+                                {% if auth_user == tube.tube_admin %}
+                                    <a class="btn btn-sm btn-warning" href="#" >Delegate admin</a>
+                                    <div class="meme-delete" style="float: right">
+                                        <!-- DELETE MEME -->
+                                        <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#DeletePost">Delete this tube!</button>
+                                        <!-- Modal -->
+                                        <div class="modal bg-warning fade" id="DeletePost" tabindex="-1" role="dialog" aria-labelledby="DeletePostLabel" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Do you want to delete this tube "{{ tube.tube }}" ?</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p class="card-text text-danger">All deleted tubes and all memes will DIE permanently!</p>
+                                                        <p class="card-text">Tube: {{ tube.tube }}</p>
+                                                        <p class="card-text">Members: ({{ tube.tube_members.all|length }}) they are: {% for member in tube.tube_members.all %}{{ member.username }}, {% endfor %}</p>
+                                                        {# TODO: Show first and last memes from this tube as reminder #}
+                                                        <p class="card-text">Tube memes - first 3 and last 3 (to be added)</p>
+                                                    </div>
+                                                    <div class="modal-footer"><a type="button" class="btn btn-danger"  href="{% url 'delete_tube' %}?tube_id={{ tube.id }}">Delete!</a><button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-2">{% right_col_draw %}</div>
+            </div>
+        </div>
+        <!-- END CONTAINER - 3 COLS -->
+    </div>
+{% endblock %}

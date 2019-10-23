@@ -1,0 +1,141 @@
+{% extends "root/main/main.html" %}
+{% block page_title %}{{ SUBJECT }}{% endblock %}
+{% block content %}
+{% load humanize %}
+{% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/memes/user_space_memes_col.css' %}">
+{% load template_simplify %}
+{% load meme_extras %}
+{% load service_tags %}
+{% subject_on_page SUBJECT %}
+<div style="padding-left: 1%;padding-right: 1%;padding-bottom: 2%">
+    <!-- CONTAINER - 3 COLS -->
+    <div class="row justify-content-md-center">
+        <!-- COL 1 -->
+{#        <div class="col-sm-2">{% left_col_draw %}</div>#}
+        <!-- COL 2 -->
+        <div class="col-md-8">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link {% if my_memes == 'my_memes' %}active{% else %}badge-light{% endif %}" href="{% url 'space' %}?my_memes=my_memes">{% open_iconic 'bolt' 24 'right' 0.4 %}My Memes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if my_memes == 'my_best' %}active{% else %} badge-light{% endif %}" href="{% url 'space' %}?my_memes=my_best">{% open_iconic 'globe' 24 'right' 0.4 %}My Best memes</a>
+                </li>
+            </ul>
+            <div style="padding-top: 1em">
+                {% if my_memes == 'my_memes' %}
+                    <div class="card-columns my-memes">
+                        {# SHOW ALL MY MEMES #}
+                        {% for my_meme in memes_items %}
+                            <div class="card border-light" style="max-width: 18rem;">
+                                <div class="card-header" style="padding: 0.8em">
+                                    {% if my_meme.tubes.is_private %}<span class="badge badge-danger">private</span>{% else %}
+                                        <span class="badge badge-success">public</span>
+                                    {% endif %} {{ my_meme.title }}
+                                </div>
+                                <div class="card-body border-light" style="padding: 0.2em">
+                                    {% if my_meme.image %}
+                                        <img class="card-img rounded mx-auto d-block"
+                                             src="{{ MEDIA_URL }}{{ my_meme.image }}" alt="Card image cap">
+                                    {% elif my_meme.link %}
+                                        <div class="embed-responsive">{% video_frame my_meme.link %}</div>
+                                        {% elif my_meme.file %}{{ my_meme.file }}{% else %}None
+                                    {% endif %}
+                                    <ul class="list-group" >
+                                        {% if my_meme.text %}
+                                            <li class="list-group-item">{{ my_meme.text }}</li>
+                                        {% elif my_meme.hypertext %}
+                                            <li class="list-group-item">{{ my_meme.hypertext }}</li>
+                                        {% endif %}
+                                        <li class="list-group-item" style="padding: 0.2em"><span class="badge badge-pill badge-dark align-middle">Tags:</span><p class="font-italic">{{ my_meme.tags }}</p></li>
+                                        <li class="list-group-item" style="padding: 0.2em">Tube: <span class="badge badge-pill badge-primary align-middle">{{ my_meme.tubes.tube }}</span></li>
+                                        <li class="list-group-item" style="padding: 0.2em">User: <span class="badge badge-pill badge-secondary align-middle">{{ my_meme.author.username }}</span></li>
+                                        <li class="list-group-item" style="padding: 0.2em"><small class="text-muted" title="{{ my_meme.pub_date }}">{{ my_meme.pub_date|naturaltime }}</small></li>
+                                    </ul>
+                                </div>
+                                <div class="card-body border-light" style="padding: 0.2em">
+                                    <ul class="nav justify-content-center">
+                                        <li class="nav-item">
+                                            <button id="btn-liking" type="button" class="like-button btn btn-sm btn-outline-success"
+                                                    value="{{ my_meme.id }}">
+                                                {% open_iconic 'thumb-up' 16 'right' 0.3 %}
+                                                <span id="likes-{{ my_meme.id }}">{% get_likes_count my_meme %}</span>
+                                            </button>
+                                        </li>
+                                        <li class="nav-item">
+                                            <button id="btn-disliking" type="button" class="dislike-button btn btn-sm btn-outline-danger"
+                                                    value="{{ my_meme.id }}">
+                                                {% open_iconic 'thumb-down' 16 'right' 0.3 %}
+                                                <span id="dislike-{{ my_meme.id }}">{% get_dislikes_count my_meme %}</span>
+                                            </button>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="comments-button btn btn-sm btn-outline-dark" href="{% url 'meme' %}?meme={{ my_meme.id }}">
+                                                {% open_iconic 'comment-square' 16 'right' 0.3 %}{% get_comments_count my_meme %}
+                                            </a>
+                                        </li>
+                                        <li class="nav-item dropdown">
+                                            <a class="btn btn-sm btn-outline-primary dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                                                {% open_iconic 'share-boxed' 16 'right' 0.3 %}
+                                            </a>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item" href="#">Facebook</a>
+                                                <a class="dropdown-item" href="#">Twitter</a>
+                                                <a class="dropdown-item" href="#">...</a>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                    <p class="card-text">
+
+                                    </p>
+                                </div>
+                                <div class="card-footer" style="padding: 0.8em">
+                                    {% if user.username == my_meme.author.username %}
+                                        <!-- DELETE MEME -->
+                                        <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#DeletePost">Delete meme
+                                        </button>
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="DeletePost" tabindex="-1" role="dialog" aria-labelledby="DeletePostLabel"
+                                             aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Do you want to delete this post?</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                    </div>
+                                                    <div class="modal-body">All deleted memes will DIE permanently!</div>
+                                                    <div class="modal-footer"><a type="button" class="btn btn-danger" href="{% url 'delete_single_meme' %}?meme_id={{ my_meme.id }}">Delete!</a>
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% elif my_memes == 'my_best' %}
+                    <div class="card-columns my_best">
+
+                    </div>
+                {% else %}
+                    <div style="padding-top: 1em">
+                        <div class="card-columns space-else">
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <!-- COL 3 -->
+        <div class="col-sm-2">{% right_col_draw %}</div>
+    </div>
+    <!-- END CONTAINER - 3 COLS -->
+</div>
+    <script src="{% static 'js/memes/like_dislike.js' %}"></script>
+{% endblock %}
+
+
+
+

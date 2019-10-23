@@ -1,0 +1,42 @@
+{# PAGES #}
+{% load static %}
+{% load template_simplify %}
+{% if ITEMS.has_other_pages %}
+<div class="prev_next">
+    <nav aria-label="Page navigation">
+        <ul class="pagination pagination-lg justify-content-center">
+
+            {# PREVIOUS #}
+            {% if ITEMS.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page={{ ITEMS.previous_page_number }}{% if context.public %};public=1{% endif %}{% if context.tube_admin %};tube_admin=1{% endif %}{% if context.tube_id %};tube_id={{ context.tube_id }}{% endif %}">{% open_iconic 'chevron-left' 24 %}</a></li>
+            {% else %}
+                <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">{% open_iconic 'chevron-left' 24 %}</a></li>
+            {% endif %}
+
+            {# PAGES: #}
+            {% for i in ITEMS.paginator.page_range %}
+                {% if ITEMS.number == i %}
+                    <li class="page-item active">
+                        <span class="page-link">
+                            {{ i }}
+                            <span class="sr-only">{% open_iconic 'home' 24 %}</span>
+                        </span>
+                    </li>
+                {% elif i > ITEMS.number|add:'-10' and i < ITEMS.number|add:'10' %}
+                    <li class="page-item"><a class="page-link" href="?page={{ i }}{% if context.public %};public=1{% endif %}{% if context.tube_admin %};tube_admin=1{% endif %}{% if context.tube_id %};tube_id={{ context.tube_id }}{% endif %}">{{ i }}</a></li>
+{#                    {% else %}#}
+{#                        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>#}
+                {% endif %}
+            {% endfor %}
+
+            {# NEXT #}
+            {% if ITEMS.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ ITEMS.next_page_number }}{% if context.public %};public=1{% endif %}{% if context.tube_admin %};tube_admin=1{% endif %}{% if context.tube_id %};tube_id={{ context.tube_id }}{% endif %}">{% open_iconic 'chevron-right' 24 %}</a></li>
+            {% else %}
+                <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">{% open_iconic 'chevron-right' 24 %}</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endif %}
+

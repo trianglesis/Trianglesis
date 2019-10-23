@@ -1,0 +1,114 @@
+{% extends "root/main/main.html" %}
+{% block page_title %}{{ SUBJECT }}{% endblock %}
+{% block content %}
+    {% load humanize %}
+    {% load static %}
+    {% load template_simplify %}
+    {% load meme_extras %}
+    {% load service_tags %}
+    {% subject_on_page SUBJECT %}
+    <div style="padding-left:2%;padding-right:2%;margin-bottom:5px;margin-top:5px">
+        <!-- CONTAINER - 3 COLS -->
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-2">
+                    <div style="padding-bottom: 1em;">
+                        <div class="card border-light">
+                            <div class="card-header">Left!</div>
+                            <div class="card-body">
+                                <p class="card-text">Left column col-sm-2</p>
+                                <a class="btn btn-outline-secondary" href="#">BEEP</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div style="padding-bottom: 1em;">
+                        <div class="card border-light">
+                            <div class="card-header">Center!</div>
+                            <div class="card-body">
+                                <p class="card-text">Center col-md-8</p>
+                                <a class="btn btn-outline-secondary" href="#">BEEP</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- CMD OUTPUT -->
+                    <div class="card">
+                        <div class="card-header">
+                            Unpack query <b>{{ CMD }}</b>
+                        </div>
+                        <div class="card-body">
+                            <table id="cmd_results" class="table table-condensed table-bordered table-hover table-sm">
+                                <thead>
+                                <tr>
+                                    <th id="name" class="table-info" scope="col">CMD Results. CMD
+                                        Type: {{ QUERY_RES }}</th>
+                                    <th id="name" class="table-info" scope="col">CMD Vals</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% if QUERY %}
+                                    {% for cmd_k, cmd_v in QUERY.items %}
+                                        <tr>
+                                            <td style="font-size:8pt;font-family:monospace;line-break: normal">cmd_k:
+                                                <b>'{{ cmd_k }}'</b></td>
+                                            <td style="font-size:8pt;font-family:monospace;line-break: normal">cmd_v:
+                                                '{{ cmd_v }}'
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
+                                {% if QUERYSET %}
+                                    {% for query_item in QUERYSET %}
+                                        <tr>
+                                            <td style="font-size:8pt;font-family:monospace;line-break: normal">raw query
+                                                item:
+                                            </td>
+                                            <td style="font-size:8pt;font-family:monospace;line-break: normal">
+                                                query_item: '{{ query_item }}'
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
+                                {% if CMD_RESULT_LIST %}
+                                    {% for cmd_res in CMD_RESULT_LIST %}
+                                        <tr>
+                                            <td style="font-size:8pt;font-family:monospace;line-break: normal">
+                                                cmd_res: {{ cmd_res }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
+                                {% if CMD_RESULT_STR %}
+                                    <tr>
+                                        <td style="font-size:8pt;font-family:monospace;line-break: normal">cmd_res
+                                            str: {{ CMD_RESULT_STR }}</td>
+                                    </tr>
+                                {% endif %}
+                                {% if CMD_RESULT_ITEM %}
+                                    <tr>
+                                        <td style="font-size:8pt;font-family:monospace;line-break: normal">cmd_res
+                                            item: {{ CMD_RESULT_ITEM }}</td>
+                                    </tr>
+                                {% endif %}
+                                </tbody>
+                            </table>
+                            <footer class="blockquote-footer">Result can be iterable or string.</footer>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div style="padding-bottom: 1em;">
+                        <div class="card border-light">
+                            <div class="card-header">Right!</div>
+                            <div class="card-body">
+                                <p class="card-text">Right column col-sm-2</p>
+                                <a class="btn btn-outline-secondary" href="#">Button</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END CONTAINER - 3 COLS -->
+    </div>
+{% endblock %}

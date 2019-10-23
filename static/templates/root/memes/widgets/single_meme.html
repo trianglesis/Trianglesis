@@ -1,0 +1,85 @@
+{% extends "root/main/main.html" %}
+{% block page_title %}Мемасичная - {{ MEME.tubes.tube }} - {{ MEME.title }} {% endblock %}
+{% block content %}
+{% load humanize %}
+{% load static %}
+{% load template_simplify %}
+{% load meme_extras %}
+<div style="padding-top: 1%">
+    <!-- CONTAINER - 3 COLS -->
+    <div class="row justify-content-md-center">
+        <!-- COL 1 -->
+        <div class="col-md-2 d-none d-lg-block meme-center-col">
+            <div class="prep-meme-center-col">
+                {% left_col_draw memorize=True manage=True %}
+            </div>
+        </div>
+        <div class="d-none d-md-block d-lg-none">
+            <div class="post-meme" style="padding-top: 1em">
+                <nav class="nav nav-pills nav-fill">
+                  <a class="nav-item nav-link btn btn-outline-dark" href="{% url 'post_meme' %}?picture=1">{% open_iconic 'image' 24 %}</a>
+                  <a class="nav-item nav-link btn btn-outline-dark" href="{% url 'post_meme' %}?file=1">{% open_iconic 'file' 24 %}</a>
+                  <a class="nav-item nav-link btn btn-outline-dark" href="{% url 'post_meme' %}?short_text=1">{% open_iconic 'text' 24 %}</a>
+                  <a class="nav-item nav-link btn btn-outline-dark" href="{% url 'post_meme' %}?hypertext=1">{% open_iconic 'copywriting' 24 %}</a>
+                  <a class="nav-item nav-link btn btn-outline-dark" href="{% url 'post_meme' %}?link=t">{% open_iconic 'external-link' 24 %}</a>
+                </nav>
+            </div>
+            <div class="post-meme" style="padding-top: 1em;padding-bottom: 1em">
+                <nav class="nav nav-pills nav-fill">
+                    <a class="btn btn-outline-dark" href="{% url 'public' %}" title="Where everything is for everyone!">{% open_iconic 'globe' 24 'right' 0.4 %}Public</a>
+                    <a class="btn btn-outline-dark" href="{% url 'my_tubes' %}?public=1" title="Show both public and Tuber threads!">{% open_iconic 'globe' 24 'right' 0.4 %}+ Both +{% open_iconic 'heart' 24 'left' 0.4 %}</a>
+                    <a class="btn btn-outline-dark" href="{% url 'my_tubes' %}?tube_admin=1" title="Where you are an Administrator">{% open_iconic 'wrench' 24 'right' 0.4 %}Admin</a>
+                    <a class="btn btn-outline-dark" href="{% url 'my_tubes' %}" title="Where you are a member of tubes!">{% open_iconic 'heart' 24 'right' 0.4 %}Tuber</a>
+                    <a class="btn btn-outline-dark" href="{% url 'my_tubes' %}?private=1" title="Private tubes where you are a member">{% open_iconic 'lock-locked' 24 'right' 0.4 %}My Private</a>
+                    {% if context.user.is_authenticated %}
+                        {% get_user_admin_tubes context.user 'admin' %}
+                    {% endif %}
+                    {% if context.user.is_authenticated %}
+                        {% get_user_admin_tubes context.user 'member' %}
+                    {% endif %}
+                </nav>
+            </div>
+        </div>
+        <!-- COL 2 -->
+        <div class="sol-md-6 col-xl-6">
+            {% meme_block_draw MEME True %}
+        </div>
+        <!-- COL 3 -->
+        <div class="col-md-2 d-none d-lg-block">
+            <div class="prep-meme-center-col">
+                {% subject_on_page SUBJECT %}
+                {% right_col_draw %}
+            </div>
+        </div>
+        <div class="d-none d-md-block d-lg-none">
+            <div class="post-meme" style="padding-top: 1em">
+                <nav class="nav nav-pills nav-fill">
+                    <a class="btn btn-outline-dark" href="{% url 'public' %}" title="Where everything is for everyone!">{% open_iconic 'globe' 24 'right' 0.4 %}Public</a>
+                    <a class="btn btn-outline-dark" href="{% url 'my_tubes' %}?public=1" title="Show both public and Tuber threads!">{% open_iconic 'globe' 24 'right' 0.4 %}+ Both +{% open_iconic 'heart' 24 'left' 0.4 %}</a>
+                    <a class="btn btn-outline-dark" href="{% url 'my_tubes' %}?tube_admin=1" title="Where you are an Administrator">{% open_iconic 'wrench' 24 'right' 0.4 %}Admin</a>
+                    <a class="btn btn-outline-dark" href="{% url 'my_tubes' %}" title="Where you are a member of tubes!">{% open_iconic 'heart' 24 'right' 0.4 %}Tuber</a>
+                    <a class="btn btn-outline-dark" href="{% url 'my_tubes' %}?private=1" title="Private tubes where you are a member">{% open_iconic 'lock-locked' 24 'right' 0.4 %}My Private</a>
+                    {% if context.user.is_authenticated %}
+                        {% get_user_admin_tubes context.user 'admin' %}
+                    {% endif %}
+                    {% if context.user.is_authenticated %}
+                        {% get_user_admin_tubes context.user 'member' %}
+                    {% endif %}
+                </nav>
+            </div>
+            <div class="post-meme" style="padding-top: 1em;padding-bottom: 2em">
+                <nav class="nav nav-pills nav-fill">
+                  <a class="nav-item nav-link btn btn-outline-dark" href="{% url 'post_meme' %}?picture=1">{% open_iconic 'image' 24 %}</a>
+                  <a class="nav-item nav-link btn btn-outline-dark" href="{% url 'post_meme' %}?file=1">{% open_iconic 'file' 24 %}</a>
+                  <a class="nav-item nav-link btn btn-outline-dark" href="{% url 'post_meme' %}?short_text=1">{% open_iconic 'text' 24 %}</a>
+                  <a class="nav-item nav-link btn btn-outline-dark" href="{% url 'post_meme' %}?hypertext=1">{% open_iconic 'copywriting' 24 %}</a>
+                  <a class="nav-item nav-link btn btn-outline-dark" href="{% url 'post_meme' %}?link=t">{% open_iconic 'external-link' 24 %}</a>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <!-- END CONTAINER - 3 COLS -->
+</div>
+    <script src="{% static 'js/memes/like_dislike.js' %}"></script>
+    <script src="{% static 'js/memes/leave_commment.js' %}"></script>
+{% endblock %}

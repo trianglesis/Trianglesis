@@ -1,0 +1,98 @@
+{% extends "root/main/main.html" %}
+{% block page_title %}{{ SUBJECT }}{% endblock %}
+{% block content %}
+    {% load humanize %}
+    {% load static %}
+    {% load template_simplify %}
+    {% load meme_extras %}
+    {% load service_tags %}
+    {% subject_on_page SUBJECT %}
+    <div style="padding-left: 1%;padding-right: 1%;padding-bottom: 2%">
+        <!-- CONTAINER - 3 COLS -->
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-2">
+                    <div style="padding-bottom: 1em;">
+                        {% left_col_draw %}
+                        <div class="card border-light">
+                            <div class="card-header">Left!</div>
+                            <div class="card-body">
+                                <p class="card-text">Left column col-sm-2</p>
+                                <a class="btn btn-outline-secondary" href="#">BEEP</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div style="padding-bottom: 1em;">
+                        <div class="card">
+                            <div class="card-header">Manage tube "{{ tube.tube }}"
+                                {% if tube.is_private %}
+                                    <span class="badge badge-danger">Private</span>
+                                {% else %}
+                                    <span class="badge badge-success">Public</span>
+                                {% endif %}
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">Tube: {{ tube.tube }}</p>
+                                <p class="card-text">Admin: {{ tube.tube_admin.username }}</p>
+                                <p class="card-text">Members: ({{ tube.tube_members.all|length }}) they are: {% for member in tube.tube_members.all %}{{ member.username }}, {% endfor %}</p>
+                                <p class="card-text">{% if tube.is_private %}Private: - (visible only for members, nobody can join){% else %}Public - visible for all!{% endif %}</p>
+                                <p class="card-text">{% if auth_user in tube.tube_members.all %}You are a Member{% else %}You can join this group{% endif %}</p>
+                                <p class="card-text">{% if auth_user == tube.tube_admin %}You are an admin{% else %}{% endif %}</p>
+                                {% if auth_user in tube.tube_members.all %}
+                                    <a href="{% url 'leave_tube' %}?tube_id={{ tube.id }};to_leave=1" class="btn btn-sm btn-secondary">Leave Tube</a>
+                                {% else %}
+                                    <a href="{% url 'join_tube' %}?tube_id={{ tube.id }};to_join=1" class="btn btn-sm btn-primary">Join Tube</a>
+                                {% endif %}
+                                {% if auth_user == tube.tube_admin %}
+                                    <a class="btn btn-sm btn-warning" href="#" >Delegate admin</a>
+                                    <a class="btn btn-outline-danger" href="#" style="float: right">Delete tube!!!</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="alert alert-secondary" role="alert">Last 10 memes of current tube: </div>
+                        <div class="card-columns my-memes-columns">
+                            {% for meme in tube_memes|slice:":10" %}
+                                <div class="card">
+                                    {% if meme.image %}
+                                        <img class="card-img-top" src="{{ MEDIA_URL }}{{ meme.image }}" alt="Card image cap">
+                                    {% elif meme.link %}<div class="embed-responsive embed-responsive-16by9">{% video_frame meme.link %}</div>
+                                    {% elif meme.file %}{{ meme.file }}
+                                    {% else %}None{% endif %}
+                                    <div class="card-body">
+                                        <h5 class="card-title">
+                                            {% if meme.tubes.is_private %}<span class="badge badge-danger">private</span>{% else %}<span class="badge badge-success">public</span>
+                                            {% endif %} {{ meme.title }}</h5>
+                                        <p class="card-text">
+                                            {% if meme.text %}{{ meme.text }}
+                                                {% elif meme.hypertext %}{{ meme.hypertext }}
+                                            {% else %}
+                                                ...
+                                            {% endif %}
+                                        </p>
+                                        <p><span class="badge badge-pill badge-dark">Tags:</span> {{ meme.tags }}</p>
+                                        <p><span class="badge badge-pill badge-primary">Tube:</span> {{ meme.tubes.tube }}</p>
+                                        <p><span class="badge badge-pill badge-secondary">User:</span> {{ meme.author.username }}</p>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div style="padding-bottom: 1em;">
+                        <div class="card border-light">
+                            <div class="card-header">Right!</div>
+                            <div class="card-body">
+                                <p class="card-text">Right column col-sm-2</p>
+                                <a class="btn btn-outline-secondary" href="#">Button</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END CONTAINER - 3 COLS -->
+    </div>
+{% endblock %}

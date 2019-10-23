@@ -1,0 +1,33 @@
+# ========================================
+# vi /etc/default/celerybeat.conf
+# vi /etc/systemd/system/celerybeat.service
+# systemctl daemon-reload
+# systemctl restart celerybeat.service
+# ========================================
+
+
+[Unit]
+Description=Celery beat
+After=network.target
+
+[Service]
+Type=forking
+User=triangle
+Group=triangle
+
+EnvironmentFile=-/etc/default/celerybeat.conf
+WorkingDirectory=/var/www/triangle
+
+ExecStart=/bin/sh -c '/var/www/triangle/core/bin/celery beat --app=${CELERY_APP} --detach \
+ --pidfile=${CELERYBEAT_PID_FILE} \
+ --logfile=${CELERYBEAT_LOG_FILE} \
+ --loglevel=${CELERYBEAT_LOG_LEVEL} \
+ --schedule=${CELERYBEATD_SHEDULE_FILE}'
+ExecStop=/bin/systemctl kill celerybeat.service
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+
+# ExecStart=/var/www/triangle/core/bin/celery beat -A ${CELERY_APP} --detach \
+# ExecStart=/var/www/triangle/core/bin/celery beat -A config \

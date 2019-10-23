@@ -1,0 +1,8 @@
+<!-- G MUSIC URL -->
+{% load static %}
+{% load template_simplify %}
+<p class="text-center">{{ title }}</p>
+<img height="100" width="100" src="{% static 'site_navi/google-play-music-logo.png' %}" alt="Google music" href="{{ TAG_URL }}">
+<a class="btn btn-outline-warning" href="{{ TAG_URL }}">{% open_iconic 'media-play' 24 'right' 0.4 %}Listen</a>
+{#{{ code }}#}
+<!-- END G MUSIC URL -->

@@ -1,0 +1,10 @@
+{% block content %}
+{% load static %}
+<div class="card card-body">Who {{ action_type }}:
+    <span id="who_{{ action_type }}-{{MEME.id}}">
+    {% for like in LIKES %}
+        {{ like.author.username }}
+    {% endfor %}
+    </span>
+</div>
+{% endblock %}

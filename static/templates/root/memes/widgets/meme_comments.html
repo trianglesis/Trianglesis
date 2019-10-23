@@ -1,0 +1,11 @@
+{% block content %}
+{% load static %}
+{% for comment in COMMENTS %}
+    <div class="card" style="overflow-wrap: break-word;">
+      <div class="card-body" style="overflow-wrap: break-word;">
+          <div class="text-sm-left" style="overflow-wrap: break-word;">{{ comment.comment }}</div>
+          <footer class="blockquote-footer">By: <span class="badge badge-light">{{ comment.author.username }}</span> at <cite title="Date Time">{{ comment.pub_date }}</cite></footer>
+      </div>
+    </div>
+{% endfor %}
+{% endblock %}

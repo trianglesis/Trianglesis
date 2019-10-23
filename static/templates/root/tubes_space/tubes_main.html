@@ -1,0 +1,84 @@
+{% extends "root/main/main.html" %}
+{% block page_title %}{{ SUBJECT }}{% endblock %}
+{% block content %}
+    {% load humanize %}
+    {% load static %}
+    {% load template_simplify %}
+    {% load meme_extras %}
+    {% load service_tags %}
+    {% subject_on_page SUBJECT %}
+    <div style="padding-left: 1%;padding-right: 1%;padding-bottom: 2%">
+        <!-- CONTAINER - 3 COLS -->
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-2">
+                    {% left_col_draw %}
+                </div>
+                <div class="col-md-8">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link {% if tubes_mode == 'popular' %}active{% else %}badge-light{% endif %}" href="{% url 'tubes' %}?tubes_mode=popular">{% open_iconic 'bolt' 24 'right' 0.4 %}Popular</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if tubes_mode == 'all' %}active{% else %} badge-light{% endif %}" href="{% url 'tubes' %}?tubes_mode=all">{% open_iconic 'globe' 24 'right' 0.4 %}All</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if tubes_mode == 'recommended' %}active{% else %}badge-light{% endif %}" href="{% url 'tubes' %}?tubes_mode=recommended">{% open_iconic 'star' 24 'right' 0.4 %}Recommended</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if tubes_mode == 'best' %}active{% else %}badge-light{% endif %}" href="{% url 'tubes' %}?tubes_mode=best">{% open_iconic 'badge' 24 'right' 0.4 %}Best</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if tubes_mode == 'today' %}active{% else %}badge-light{% endif %}" href="{% url 'tubes' %}?tubes_mode=today">{% open_iconic 'flash' 24 'right' 0.4 %}Today</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if tubes_mode == 'growing' %}active{% else %}badge-light{% endif %}" href="{% url 'tubes' %}?tubes_mode=growing">{% open_iconic 'graph' 24 'right' 0.4 %}Growing</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if tubes_mode == 'user_admin' %}active{% else %}badge-light{% endif %}" href="{% url 'tubes' %}?tubes_mode=user_admin">{% open_iconic 'wrench' 24 'right' 0.4 %}You're Admin</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if tubes_mode == 'user_member' %}active{% else %}badge-light{% endif %}" href="{% url 'tubes' %}?tubes_mode=user_member">{% open_iconic 'heart' 24 'right' 0.4 %}You're Member</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if tubes_mode == 'user_private' %}active{% else %}badge-light{% endif %}" href="{% url 'tubes' %}?tubes_mode=user_private">{% open_iconic 'lock-locked' 24 'right' 0.4 %}Yours private</a>
+                        </li>
+                    </ul>
+                    <div>
+                        {% for tube in QUERYSET %}
+                            <div style="padding-top: 1em">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ tube.tube }}
+                                            {% if tube.is_private %}
+                                                <span class="badge badge-danger">Private</span>
+                                            {% else %}
+                                                <span class="badge badge-success">Public</span>
+                                            {% endif %}
+                                        </h5>
+                                        <p class="card-text">Members: {{ tube.tube_members.all|length }}</p>
+                                        <p class="card-text">Admin: {{ tube.tube_admin.username }}</p>
+                                        <p class="card-text">Members list: {% for member in tube.tube_members.all %}{{ member.username }}, {% endfor %}</p>
+                                        <p class="card-text">{% if auth_user in tube.tube_members.all %}You are a Member{% else %}You can join this group{% endif %}</p>
+                                        {% if auth_user in tube.tube_members.all %}
+                                            <a href="{% url 'leave_tube' %}?tube_id={{ tube.id }}" class="btn btn-sm btn-secondary">Leave Tube</a>
+                                        {% else %}
+                                            <a href="{% url 'join_tube' %}?tube_id={{ tube.id }}" class="btn btn-sm btn-primary">Join Tube</a>
+                                        {% endif %}
+                                        {% if auth_user in tube.tube_members.all or auth_user == tube.tube_admin %}
+                                            <a href="{% url 'manage_tube' %}?tube_id={{ tube.id }}" class="btn btn-sm btn-warning">Manage tube</a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    {% right_col_draw %}
+                </div>
+            </div>
+        </div>
+        <!-- END CONTAINER - 3 COLS -->
+    </div>
+{% endblock %}

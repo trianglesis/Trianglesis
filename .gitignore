@@ -156,3 +156,7 @@ upload/user_media/pictures/panoramio-69440738_g9flA1e.jpg
 upload/user_media/pictures/panoramio-69440848_WAUJJQm.jpg
 upload/user_media/pictures/user_6/
 /core/config_passwords.py
+banking/__init__.py
+banking/migrations/0001_initial.py
+banking/migrations/0003_auto_20190825_1700.py
+banking/migrations/0004_auto_20190825_1703.py

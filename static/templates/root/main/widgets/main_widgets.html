@@ -1,0 +1,69 @@
+{% extends "root/main/main.html" %}
+{% block page_title %}Triangle home{% endblock %}
+{% block content %}
+    {% load static %}
+    {% load template_simplify %}
+    <div style="padding:1em;">
+        <div class="jumbotron jumbotron-fluid">
+            <div class="container">
+                <h1 class="display-4">Trianglesis Web Lab</h1>
+                <p class="lead">Here you can find some ideas I'm working on...</p>
+            </div>
+        </div>
+
+        <!-- Items cards page -->
+        <div>
+            <div class="card-deck">
+                <div class="card">
+                    <img class="card-img-top" src="{% static 'pictures/site_navi/tech_100_200.jpg' %}"
+                         alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">Memes space</h5>
+                        <p class="card-text">This is the place where memes live well.</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{% url 'public' %}" class="btn btn-success">Go to the memes!</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <img class="card-img-top" src="{% static 'pictures/site_navi/tech_100_200.jpg' %}"
+                         alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">Author's bio blog</h5>
+                        <p class="card-text">Later will add here a blog project</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-secondary">Read boring...</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <img class="card-img-top" src="{% static 'pictures/site_navi/tech_100_200.jpg' %}"
+                         alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">Author's tech blog</h5>
+                        <p class="card-text">This is a separate author's blog related only to technical and IT themes</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-warning">Read nerd...</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <img class="card-img-top" src="{% static 'pictures/site_navi/tech_100_200.jpg' %}"
+                         alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">Not yet</h5>
+                        <p class="card-text">IDK, just keep this place</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-dark">Go nowhere</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+{% endblock %}

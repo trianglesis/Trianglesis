@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Load scripts: -->
+    {% load i18n static %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'octicons/octicons.css' %}" />
+    <script src="{% static 'js/ajax_set/ajax_setup.js' %}"></script>
+    {# Load the tag library #}
+    {% load bootstrap4 %}
+    {# Load CSS and JavaScript #}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    {# Display django.contrib.messages as Bootstrap alerts #}
+    {% bootstrap_messages %}
+    <meta charset="UTF-8">
+    <title id="page_title">{% block page_title %}{% endblock %}</title>
+</head>
+<body>
+{% load template_simplify %}
+
+<!-- Nav bar: -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-success sticky-top">
+    <!-- Brand button and place for logo: -->
+    <a class="navbar-brand" href="{% url 'home' %}"><img src="{% static 'pictures/triangle_logo/Logo.svg' %}" width="36" height="36" alt="trianglesis_logo">Trianglesis</a>
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <!-- Home link to shorter widgets: -->
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'public' %}">{% octicon 'briefcase' 26 'right' 0.3%}Memes</a>
+            </li>
+        </ul>
+        <span class="navbar-text" style="padding-right: 20px;">{% now "l jS F Y H:i" %}</span>
+        <!-- Auth section: -->
+        <div style="right: 0; left: auto;">
+            <button type="button" class="btn btn-sm btn-outline-dark dropdown-toggle align-right" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="float: right;">{% spaceless %}
+                {% if user.is_authenticated %}
+                    {% trans 'Hi, ' %}{{ user }}
+                {% else %}
+                    {% trans 'Log in' %}
+                {% endif %}{% endspaceless %}
+            </button>
+            <div class="dropdown-menu" style="right: 0; left: auto;">
+                {% if user.is_authenticated %}
+                    <a class="dropdown-item" href="{% url 'logout' %}">Log out</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{% url 'password_change' %}">Change password</a>
+                    {% if user.is_staff %}
+                        <a class="dropdown-item" href="{% url 'admin:index' %}">Admin</a>
+                        <div class="dropdown-divider"></div>
+                    {% endif %}
+                {% else %}
+                    <a class="dropdown-item" href="{% url 'login' %}">Log in</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{% url 'django_registration_register' %}">Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</nav>
+<!-- Page content goes here: -->
+<div id="content">
+    {% block content %}{% endblock %}
+</div>
+</body>
+</html>

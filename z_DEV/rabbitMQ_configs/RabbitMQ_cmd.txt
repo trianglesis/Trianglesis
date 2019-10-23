@@ -1,0 +1,60 @@
+Inspect:
+
+rabbitmqctl list_queues name messages messages_ready
+rabbitmqctl list_queues
+rabbitmqctl list_exchanges
+rabbitmqctl list_bindings
+rabbitmqctl list_connections
+rabbitmqctl list_channels
+rabbitmqctl list_consumers
+
+rabbitmqctl list_queues name messages messages_ready
+rabbitmqctl list_queues name consumers
+
+
+================== RABBIT MQ: ================== ================== ==================
+https://www.rabbitmq.com/rabbitmqctl.8.html#reset
+chkconfig rabbitmq-server on
+systemctl start rabbitmq-server
+systemctl restart rabbitmq-server
+systemctl stop rabbitmq-server
+
+rabbitmqctl add_user octo_user PASSWD
+rabbitmqctl stop
+
+rabbitmq-server
+rabbitmq-server start
+
+rabbitmqctl add_user octo_user PASSWD
+rabbitmqctl add_vhost HOST@BLA
+rabbitmqctl set_user_tags octo_user octopus_mq
+rabbitmqctl set_permissions -p HOST@BLA octo_user ".*" ".*" ".*"
+tail -f -n 100 /var/log/rabbitmq/rabbit@HOST@BLA.log
+rabbitmq-server
+rabbitmqctl stop
+
+
+rabbitmqctl stop_app
+rabbitmqctl reset
+rabbitmqctl start_app
+
+
+rabbitmqctl add_user core_user_mq PASSWD
+rabbitmqctl set_user_tags core_user_mq administrator
+
+rabbitmqctl add_vhost tentacle
+rabbitmqctl set_permissions -p tentacle core_user_mq ".*" ".*" ".*"
+
+
+chkconfig rabbitmq-server on
+systemctl start rabbitmq-server
+systemctl restart rabbitmq-server
+
+
+/var/www/triangle/core/bin/celery flower --broker=amqp://core_user_mq:PASSWD@localhost:5672/tentacle --broker_api=http://core_user_mq:PASSWD@localhost:15672/api/
+
+tail -f -n 100 /var/log/rabbitmq/rabbit@localhost.log
+rabbitmq-server
+rabbitmqctl stop
+rabbitmq-server
+rabbitmq-server start

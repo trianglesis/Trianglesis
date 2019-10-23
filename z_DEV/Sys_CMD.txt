@@ -1,0 +1,47 @@
+#================== virtenv: ================== ================== ==================
+cd /var/www/triangle/ && source bin/activate
+deactivate
+
+
+
+# ================== All services:
+systemctl restart httpd && systemctl restart celery && systemctl restart celerybeat && systemctl restart flower
+
+# ================== MQ:
+celery w_double_decker -Q double_decker --purge
+celery amqp queue.purge perforce
+
+
+#================== RABBIT MQ: ================== ================== ==================
+rabbitmqctl stop_app
+rabbitmqctl reset
+rabbitmqctl start_app
+
+
+rabbitmqctl add_user core_user_mq PASSWD
+rabbitmqctl set_user_tags core_user_mq administrator
+
+rabbitmqctl add_vhost tentacle
+rabbitmqctl set_permissions -p tentacle core_user_mq ".*" ".*" ".*"
+
+
+chkconfig rabbitmq-server on
+systemctl start rabbitmq-server
+systemctl restart rabbitmq-server
+
+
+/var/www/triangle/core/bin/celery flower --broker=amqp://core_user_mq:PASSWD@localhost:5672/tentacle --broker_api=http://core_user_mq:PASSWD@localhost:15672/api/
+
+tail -f -n 100 /var/log/rabbitmq/rabbit@localhost.log
+rabbitmq-server
+rabbitmqctl stop
+rabbitmq-server
+rabbitmq-server start
+
+#================== FLOWER: ================== ================== ==================
+celery flower --broker=amqp://core_user_mq:PASSWD@localhost:5672/vl-aus-tkudev-37
+
+vi /etc/systemd/system/flower.service
+systemctl daemon-reload
+systemctl restart flower.service
+systemctl status flower.service

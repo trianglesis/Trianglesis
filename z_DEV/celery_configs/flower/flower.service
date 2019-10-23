@@ -1,0 +1,21 @@
+# ========================================
+# vi /etc/systemd/system/flower.service
+# systemctl daemon-reload
+# systemctl restart flower.service
+# ========================================
+[Unit]
+Description=Flower Celery Service
+
+[Service]
+User=triangle
+Group=triangle
+WorkingDirectory=/var/www/triangle/
+ExecStart=/var/www/triangle/core/bin/celery flower --app=core.core_celery:app --logfile=/var/log/triangle/flower.log --loglevel=INFO --broker=amqp://core_user_mq:FmB6pwiHjlZEZQvSo1gI@localhost:5672/tentacle --broker_api=http://core_user_mq:FmB6pwiHjlZEZQvSo1gI@localhost:15672/api/ --basic_auth=flower_user:gjRWbxe1bzPtZRwxT9gq
+Restart=on-failure
+Type=simple
+
+[Install]
+WantedBy=multi-user.target
+
+# https://flower.readthedocs.io/en/latest/config.html#broker-api
+# --broker_api=http://username:password@rabbitmq-server-name:15672/api/

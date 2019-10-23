@@ -1,0 +1,170 @@
+{% load static %}
+{% load humanize %}
+{% load meme_extras %}
+{% load service_tags %}
+{% load template_simplify %}
+<!-- MEME OBJECT -->
+<div class="meme-object meme-id-{{ MEME.id }}">
+    {# HERE: Light up the border of meme depends on user role on it: #}
+    <div class="card {% if MEME.tubes.is_private %}border-danger{% elif context.IS_AUTHOR %}border-primary{% elif context.IS_ADMIN %}border-warning{% endif %} text-center">
+        <div class="card-header">
+            <h6>{{ MEME.title }} {% if IS_AUTHOR %}<span class="badge badge-info"> Me </span>{% endif %}</h6>
+        </div>
+        <div class="card-body">
+            {% if MEME.image %}
+                <img src="{{ context.MEDIA_URL }}{{ MEME.image }}" class="img-fluid" alt="Responsive image">
+                {% elif MEME.link %}{% video_frame MEME.link %}
+                {% elif MEME.file %}{{ MEME.file }}
+                {% elif MEME.text %}{{ MEME.text }}
+                {% elif MEME.hypertext %}{{ MEME.hypertext }}
+            {% else %}None{% endif %}
+        </div>
+        <div class="card-footer">
+        <!-- MEME METADATA -->
+            <div class="container text-center">
+                <div class="row">
+                    <div class="col"><div class="meme-tags"><span class="badge badge-pill badge-light text-sm-center">{{ MEME.tags }}</span></div></div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <a class="meme-private">{% if MEME.tubes.is_private %}<span class="badge badge-danger">private</span>{% else %}<span class="badge badge-success">public</span>{% endif %}</a>
+                    </div>
+                    <div class="col">
+                        <a class="badge badge-primary" href="{% url 'single_tube' %}?tube_id={{ MEME.tubes.id }}" title="Jump into this tube!">{{ MEME.tubes.tube }}</a>
+                    </div>
+                    <div class="col">
+                        <div class="meme-author"><span class="badge badge-secondary">{{ MEME.author.username }}</span></div>
+                    </div>
+                    <div class="col">
+                        <div class="meme-date"><span class="badge badge-info" title="{{ MEME.pub_date }}">{{ MEME.pub_date|naturaltime }}</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END MEME METADATA -->
+    </div>
+</div>
+<!-- END MEME OBJECT -->
+{#{% if user.is_authenticated %}#}
+<!-- MEMES BUTTONS -->
+<div class="card memes-buttons">
+    <div class="card-header">
+        <ul class="nav justify-content-center">
+            <li class="nav-item">
+                <button id="btn-liking" type="button" class="like-button btn btn-outline-success" value="{{ MEME.id }}">
+                    {% open_iconic 'thumb-up' 22 'right' 0.3%}
+                    <span id="likes-{{ MEME.id }}">{% get_likes_count MEME %}</span>
+                </button>
+            </li>
+            <li class="nav-item">
+                <button id="btn-disliking" type="button" class="dislike-button btn btn-outline-danger" value="{{ MEME.id }}">
+                    {% open_iconic 'thumb-down' 22 'right' 0.3%}
+                    <span id="dislike-{{ MEME.id }}">{% get_dislikes_count MEME %}</span>
+                </button>
+            </li>
+            {% if MEME_SOLO %}
+            {% else %}
+                <li class="nav-item">
+                    <a class="comments-button btn btn-outline-dark" href="{% url 'meme' %}?meme={{ MEME.id }}">
+                        {% open_iconic 'comment-square' 22 'right' 0.3%}
+                        {% get_comments_count MEME %}
+                    </a>
+                </li>
+            {% endif %}
+            <li class="nav-item dropdown">
+                <a class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    {% open_iconic 'share-boxed' 22 'right' 0.3%}
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#">Facebook</a>
+                    <a class="dropdown-item" href="#">Twitter</a>
+                    <a class="dropdown-item" href="#">...</a>
+                </div>
+            </li>
+        </ul>
+        {% if MEME_SOLO %}
+            <div style="padding-top: 1em;">
+                <ul class="nav justify-content-between">
+                    <li class="nav-item">
+                        <button class="btn btn-sm btn-outline-success collapsed" data-toggle="collapse" data-target="#ShowUserLikes" aria-expanded="true" aria-controls="ShowUserLikes">
+                            {% open_iconic 'thumb-up' 22 'right' 0.3%}Who liked
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="btn btn-sm btn-outline-secondary" data-toggle="collapse" data-target="#HideUserComments" aria-expanded="false" aria-controls="HideUserComments">
+                            {% open_iconic 'comment-square' 22 'right' 0.3%}Comments: {% get_comments_count MEME %}
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="btn btn-sm btn-outline-danger collapsed" data-toggle="collapse" data-target="#ShowUserDisLikes" aria-expanded="true" aria-controls="ShowUserDisLikes">
+                            {% open_iconic 'thumb-down' 22 'right' 0.3%}Who disliked
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        {% else %}
+        {% endif %}
+    </div>
+    {% if MEME_SOLO %}
+        <!-- MEME SINGLE LIKES\DISLIKES\COMMENTS -->
+        <div class="card-body">
+            <div id="accordion">
+                <!-- LIKES -->
+                <div class="meme-likes-block"><div id="ShowUserLikes" class="collapse" aria-labelledby="ShowLikes" data-parent="#accordion">{% get_likes_obj MEME 'like' %}</div></div>
+                <!-- END LIKES -->
+                <!-- DISLIKES -->
+                <div class="meme-dislikes-block"><div id="ShowUserDisLikes" class="collapse" aria-labelledby="ShowDisLikes" data-parent="#accordion">{% get_likes_obj MEME 'dislike' %}</div></div>
+                <!-- END DISLIKES -->
+                <!-- COMMENTS -->
+                <div class="meme-comments-block">
+                    <div id="HideUserComments" class="collapse show" aria-labelledby="HideComments" data-parent="#accordion">
+                        {% get_comments_obj MEME %}
+                        {% if context.user.is_authenticated %}
+                            <div style="display: none" id="my_comment_sent">
+                                <div class="card" style="overflow-wrap: break-word;">
+                                    <div class="card-body" style="overflow-wrap: break-word;">
+                                        <div class="text-sm-left" style="overflow-wrap: break-word;"><span id="my_comment"></span></div>
+                                        <footer class="blockquote-footer">By: <span class="badge badge-light">Me</span> at <cite title="Date Time">a while ago...</cite></footer>
+                                    </div>
+                                </div>
+                            </div>
+                            <form id="user_comment">{% csrf_token %}
+                                <label for="leave-comment-id">Leave comment:</label>
+                                <textarea class="form-control" id="leave-comment-id" rows="3" placeholder="User Comment"></textarea>
+                                <input id="meme_id" type="hidden" name="meme" value="{{ MEME.id }}"/>
+                                <input id="author_id" type="hidden" name="author" value="{{ context.user.id }}"/>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+                <!-- END COMMENTS -->
+            </div>
+        </div>
+        <!-- END MEME SINGLE LIKES\DISLIKES\COMMENTS -->
+        {% if context.IS_ADMIN or context.IS_AUTHOR %}
+            <div class="card-footer text-right">
+                <div class="meme-delete">
+                    <!-- DELETE MEME -->
+                    <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#DeletePost">Delete meme</button>
+                    <!-- Modal -->
+                    <div class="modal fade" id="DeletePost" tabindex="-1" role="dialog" aria-labelledby="DeletePostLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Do you want to delete this post?</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                </div>
+                                <div class="modal-body">All deleted memes will DIE permanently!</div>
+                                <div class="modal-footer"><a type="button" class="btn btn-danger"  href="{% url 'delete_single_meme' %}?meme_id={{ MEME.id }}">Delete!</a><button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% else %}
+    {% endif %}
+</div>
+<!-- END MEMES BUTTONS -->
+{#{% endif %}#}

@@ -1,0 +1,112 @@
+{% block content %}
+{% load static %}
+{% load meme_extras %}
+{% load template_simplify %}
+{% with '/memes/space/ /memes/meme/ /memes/tubes/ /memes/public/' as col_show %}
+    {% if context.request.path in col_show.split %}
+        <div style="padding-bottom: 1em;">
+            <div class="card">
+                <img class="card-img-top" src="/static/pictures/site_navi/tech_100_200.jpg" alt="Card image cap">
+                <div class="card-body">
+                    <p class="card-text">Fucking AD you bored with</p>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if context.request.path in col_show.split %}
+        <div style="padding-bottom: 1em;">
+            <div class="card border-light">
+                <div class="card-header">Ask Admin</div>
+                <div class="card-body">
+                    <p class="card-text">Ask admin about </p>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if context.request.path == '/memes/space/' %}
+        {% if context.user.is_authenticated %}
+        <div style="padding-bottom: 1em;">
+            <div class="card">
+                <img class="card-img-top" src="/static/pictures/site_navi/tech_100_200.jpg" alt="Card image cap">
+                <div class="card-body">
+                    <p class="card-text">Login\Password change</p>
+                    <a class="btn btn-outline-secondary" href="{% url 'password_change' %}">Change password</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    {% endif %}
+
+    {% if context.request.path == '/memes/tubes/' %}
+        {% if context.user.is_authenticated %}
+        <div style="padding-bottom: 1em;">
+            <div class="card border-light">
+                <div class="card-header">Create a TUBE!</div>
+                <div class="card-body">
+                    <p class="card-text">Create a custom tube</p>
+                    <a class="btn btn-outline-secondary" href="{% url 'tube_create' %}">Create tube</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    {% endif %}
+
+    {# Show on memes list and meme solo #}
+    {% if context.request.path == '/memes/space/' %}
+        {% if context.user.is_authenticated %}
+        <div style="padding-bottom: 1em;">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h6 class="card-title">Explore</h6>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <div class="text-center">
+                            <div class="btn-group-vertical">
+                                <a class="btn btn-sm btn-primary" href="{% url 'public' %}" title="Where everything is for everyone!">{% open_iconic 'globe' 24 'right' 0.4 %}Public</a>
+                                <a class="btn btn-sm btn-outline-warning" href="{% url 'my_tubes' %}?public=true" title="Show both public and Tuber threads!">{% open_iconic 'globe' 24 'right' 0.4 %}+ Both +{% open_iconic 'heart' 24 'left' 0.4 %}</a>
+                                <a class="btn btn-sm btn-secondary" href="{% url 'my_tubes' %}" title="Where you are a member of tubes!">{% open_iconic 'heart' 24 'right' 0.4 %}Tuber</a>
+                                <a class="btn btn-sm btn-warning" href="{% url 'my_tubes' %}?tube_admin=true" title="Where you are an Administrator">{% open_iconic 'wrench' 24 'right' 0.4 %}Admin</a>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <div class="text-center" style="padding: 0.5em;">
+                    <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                        <ul class="nav flex-column">
+                            {% if context.user.is_authenticated %}
+                                {% get_user_admin_tubes context.user 'admin' %}
+                            {% endif %}
+                            {% if context.user.is_authenticated %}
+                                {% get_user_admin_tubes context.user 'member' %}
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    {% endif %}
+    {# Show on memes list and meme solo #}
+    {% if context.request.path == '/memes/space/' %}
+        {% if context.user.is_authenticated %}
+        <div style="padding-bottom: 1em;">
+            <div class="card text-center border-light">
+                <div class="card-body">
+                    <h6 class="card-title">Manage</h6>
+                    <div class="btn-group-vertical">
+                        <a class="btn btn-sm btn-outline-secondary" href="{% url 'space' %}">{% open_iconic 'person' 24 'right' 0.4 %}Space</a>
+                        <a class="btn btn-sm btn-outline-secondary" href="{% url 'tubes' %}?tubes_mode=user_admin">{% open_iconic 'wrench' 24 'right' 0.4 %}Admin tubes</a>
+                        <a class="btn btn-sm btn-outline-secondary" href="{% url 'tubes' %}?tubes_mode=user_member">{% open_iconic 'heart' 24 'right' 0.4 %}Member tubes</a>
+                        <a class="btn btn-sm btn-outline-secondary" href="{% url 'space' %}#pills-my-memes">{% open_iconic 'project' 24 'right' 0.4 %}My memes</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    {% endif %}
+
+{% endwith %}
+{% endblock %}

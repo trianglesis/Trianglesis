@@ -1,0 +1,109 @@
+{% extends "root/main/main.html" %}
+{% block page_title %}{{ SUBJECT }}{% endblock %}
+{% block content %}
+{% load static %}
+{% load meme_extras %}
+{% load template_simplify %}
+{% subject_on_page SUBJECT %}
+<div style="padding-left: 1%;padding-right: 1%;padding-bottom: 2%">
+
+    <!-- CONTAINER - 3 COLS -->
+    <div class="row justify-content-center">
+        <!-- COL 1 -->
+        <div class="col-md-auto">
+            {% left_col_draw %}
+        </div>
+        <!-- COL 2 -->
+        <div class="col">
+            <h2>New post</h2>
+            <form method="POST" class="post-form" enctype="multipart/form-data">{% csrf_token %}
+                {{ formset.management_form }}
+{#              {{ form.as_p }}#}
+                <!-- POST CARD -->
+                <div class="card">
+                    <!-- CARD HEADER -->
+                    <div class="card-header">
+                        <!-- POST TITLE -->
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroup-sizing-default">Title</span>
+                            </div>
+{#                            <input type="text" class="form-control" aria-label="Post_title" aria-describedby="inputGroup-sizing-default">#}
+                            {{ form.title }}
+                        </div>
+                    </div>
+                    <!-- END CARD HEADER -->
+                    <!-- CARD BODY -->
+                    <!-- POST TAGS -->
+                    <div class="card-body">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend"><span class="input-group-text" id="inputGroup-sizing-default">#</span></div>
+                            {{ form.tags }}
+                        </div>
+                        <!-- POST TUBE -->
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend"><label class="input-group-text" for="inputGroupSelect01">Tube:</label></div>
+                            {{ form.tubes }}
+                        </div>
+                        <!-- UPLOAD PICTURE -->
+                        {% for form in images_formset %}
+                        <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Picture</span>
+                                </div>
+                                <div class="custom-file">
+                                    <label class="custom-file-label" for="inputGroupImage">Choose image</label>
+                                    {# {{ form.image }}#}
+                                    {{ form }}
+                                </div>
+                        </div>
+                        {% endfor %}
+                        <!-- UPLOAD FILE -->
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">File</span>
+                            </div>
+                            <div class="custom-file">
+{#                                {{ form.file }}#}
+                                    {% for form in files_formset %}
+                                    <label class="custom-file-label" for="inputGroupFile">Choose file</label>
+                                        {{ form }}
+                                    {% endfor %}
+                            </div>
+                        </div>
+                        <!-- PASTE HYPERLINK -->
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroup-sizing-sm">Paste link:</span>
+                            </div>
+                            {{ form.link }}
+                        </div>
+                        <!-- SHORT POST TEXT -->
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Short post:</span>
+                            </div>
+                            {{ form.text }}
+                        </div>
+                        <!-- LONG POST TEXT-->
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Long post:</span>
+                            </div>
+                            {{ form.hypertext }}
+                        </div>
+                    </div>
+                    <!-- END CARD BODY -->
+                    <button type="submit" class="save btn btn-default">Save</button>
+                </div>
+                <!-- END POST CARD -->
+            </form>
+        </div>
+        <!-- COL 3 -->
+        <div class="col-md-auto">
+            {% right_col_draw %}
+        </div>
+    </div>
+    <!-- END CONTAINER - 3 COLS -->
+</div>
+{% endblock %}

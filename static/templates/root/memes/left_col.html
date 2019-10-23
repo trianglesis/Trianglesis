@@ -1,0 +1,180 @@
+{% block content %}
+{% with '/memes/public/ /memes/meme/ /memes/single_tube/ /memes/my_tubes/ /memes/tubes/ /memes/meme_posted/' as col_show %}
+{% load static %}
+{% load meme_extras %}
+    {% load template_simplify %}
+    {% if context.DEBUG %}
+        <div style="padding-bottom: 1em;">
+            <div class="card border-light" >
+                <div class="card-body">
+                    <p class="card-text">Req path {{ context.request.path }}</p>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    {# Show on memes list and meme solo #}
+    {% if context.request.path in col_show.split or KWARGS.memorize %}
+        {% if context.user.is_authenticated %}
+        <div style="padding-bottom: 1em;">
+            <div class="card border-light">
+                <img class="card-img-top" src="/static/pictures/site_navi/tech_100_200.jpg" alt="Card image cap">
+                <div class="card-body">
+                    <h6 class="card-title">Memorize!</h6>
+                    <ul class="list-group list-group-flush" style="max-width: 18em">
+                        <li class="list-group-item">
+                            <a class="btn btn-outline-info text-left" href="{% url 'post_meme' %}?picture=1"
+                               style="float: left">{% open_iconic 'image' 24 %}</a>
+                            <a class="btn btn-outline-secondary text-right" href="{% url 'post_meme' %}?file=1"
+                               style="float: right">{% open_iconic 'file' 24 %}</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a class="btn btn-outline-primary text-left" href="{% url 'post_meme' %}?short_text=1"
+                               style="float: left">{% open_iconic 'text' 24 %}</a>
+                            <a class="btn btn-outline-dark text-right" href="{% url 'post_meme' %}?hypertext=1"
+                               style="float: right">{% open_iconic 'copywriting' 24 %}</a>
+                        </li>
+                        <li class="list-group-item text-center">
+                            <a class="btn btn-outline-success"
+                               href="{% url 'post_meme' %}?link=true">{% open_iconic 'external-link' 24 %}</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-footer text-muted">Make a post of something</div>
+            </div>
+        </div>
+        {% endif %}
+    {% endif %}
+    {# Show on memes list and meme solo #}
+    {% if context.request.path in col_show.split and not context.request.path == '/memes/post_meme/' %}
+        {% if context.user.is_authenticated %}
+        <div style="padding-bottom: 1em;">
+            <div class="card border-light text-center">
+                <div class="card-header">{% open_iconic 'browser' 24 'right' 0.4 %}Explore</div>
+                <div class="card-body">
+                    <div class="text-center">
+                        <div class="btn-group-vertical">
+                            <a class="btn btn-outline-dark" href="{% url 'public' %}" title="Where everything is for everyone!">{% open_iconic 'globe' 24 'right' 0.4 %}Public</a>
+                            <a class="btn btn-outline-dark" href="{% url 'my_tubes' %}?public=1" title="Show both public and Tuber threads!">{% open_iconic 'globe' 24 'right' 0.4 %}+ Both +{% open_iconic 'heart' 24 'left' 0.4 %}</a>
+                            <a class="btn btn-outline-dark" href="{% url 'my_tubes' %}?tube_admin=1" title="Where you are an Administrator">{% open_iconic 'wrench' 24 'right' 0.4 %}Admin</a>
+                            <a class="btn btn-outline-dark" href="{% url 'my_tubes' %}" title="Where you are a member of tubes!">{% open_iconic 'heart' 24 'right' 0.4 %}Tuber</a>
+                            <a class="btn btn-outline-dark" href="{% url 'my_tubes' %}?private=1" title="Private tubes where you are a member">{% open_iconic 'lock-locked' 24 'right' 0.4 %}My Private</a>
+                            {% if context.user.is_authenticated %}
+                                {% get_user_admin_tubes context.user 'admin' %}
+                            {% endif %}
+                            {% if context.user.is_authenticated %}
+                                {% get_user_admin_tubes context.user 'member' %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer text-muted">Browse tubes</div>
+            </div>
+        </div>
+        {% endif %}
+    {% endif %}
+
+    {% if context.request.path == '/memes/tube_create/' %}
+        <div style="padding-bottom: 1em;">
+            <div class="card border-warning bg-info text-white">
+                <div class="card-header">Reminder!</div>
+                <div class="card-body">
+                    <p class="card-text">When you create a new tube:</p>
+
+                    <ul class="list-group">
+                        <li class="list-group-item list-group-item-primary">New tube is unique!</li>
+                        <li class="list-group-item list-group-item-secondary">This tube will include only themed memes</li>
+                        <li class="list-group-item list-group-item-success">You will manage this tube</li>
+                        <li class="list-group-item list-group-item-danger">You can invite friends to this tube (in progress)</li>
+                        <li class="list-group-item list-group-item-warning">You can close this tube as private and nobody (only invited members) will see memes in it!</li>
+                        <li class="list-group-item list-group-item-info">To be added...</li>
+                        <li class="list-group-item list-group-item-light">...?</li>
+                        <li class="list-group-item list-group-item-dark">Profit!</li>
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    {# Show on memes list and meme solo #}
+    {% if context.request.path in col_show.split or KWARGS.manage or context.request.path == '/memes/tube_create/' %}
+        {% if context.user.is_authenticated %}
+        <div style="padding-bottom: 1em;">
+            <div class="card text-center border-light">
+                <div class="card-header">Manage</div>
+                <div class="card-body">
+                    <div class="btn-group-vertical">
+                        <a class="btn btn-outline-dark" href="{% url 'space' %}">{% open_iconic 'person' 24 'right' 0.4 %}Space</a>
+                        <a class="btn btn-outline-dark" href="{% url 'tubes' %}?tubes_mode=user_admin">{% open_iconic 'wrench' 24 'right' 0.4 %}Admin tubes</a>
+                        <a class="btn btn-outline-dark" href="{% url 'tubes' %}?tubes_mode=user_member">{% open_iconic 'heart' 24 'right' 0.4 %}Member tubes</a>
+                        <a class="btn btn-outline-dark" href="{% url 'space' %}#pills-my-memes">{% open_iconic 'project' 24 'right' 0.4 %}My memes</a>
+                    </div>
+                </div>
+                <div class="card-footer text-muted">Manage tubes/join new</div>
+            </div>
+        </div>
+        {% endif %}
+    {% endif %}
+    {% if context.request.path in col_show.split %}
+        <div style="padding-bottom: 1em;">
+            <div class="card border-light" style="padding-bottom: 1em;">
+                <div class="card-header">TOP Public tubes</div>
+                <div class="card-body">
+                    <p class="card-text">Show here top 5-10 public tubes with most users, comments, and memes</p>
+                </div>
+            </div>
+        </div>
+        <div style="padding-bottom: 1em;">
+            <div class="card border-light" style="padding-bottom: 1em;">
+                <div class="card-header">TOP Comment Users</div>
+                <div class="card-body">
+                    <p class="card-text">Show here top 5-10 users who are most active</p>
+                </div>
+            </div>
+        </div>
+        <div style="padding-bottom: 1em;">
+            <div class="card border-light" style="padding-bottom: 1em;">
+                <div class="card-header">TOP Commented Memes</div>
+                <div class="card-body">
+                    <p class="card-text">Show here top 5-10 public memes with most comments</p>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    {% if context.request.path in col_show.split %}
+        {% if context.user.is_authenticated %}
+            <div style="padding-bottom: 1em;">
+                <div class="card border-light">
+                    <div class="card-header">Tubes space</div>
+                    <div class="card-body">
+                        <p class="card-text">Tubes control buttons?</p>
+                        <a class="btn btn-outline-secondary" href="#">BEEP</a>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endif %}
+    {% if context.request.path == '/memes/post_meme/' %}
+        <div style="padding-bottom: 1em;">
+            <div class="card border-warning bg-info text-white">
+                <div class="card-header">Reminder!</div>
+                <div class="card-body">
+                    <p class="card-text">When you post a meme:</p>
+
+                    <ul class="list-group">
+                        <li class="list-group-item list-group-item-primary">Meme is funny!</li>
+                        <li class="list-group-item list-group-item-secondary">Short tittle</li>
+                        <li class="list-group-item list-group-item-success">3-4 main tags</li>
+                        <li class="list-group-item list-group-item-danger">Pick a tube related to the meme</li>
+                        <li class="list-group-item list-group-item-warning">You can post videos as link</li>
+                        <li class="list-group-item list-group-item-info">Or you can upload a pic</li>
+                        <li class="list-group-item list-group-item-light">Or you can post a short text</li>
+                        <li class="list-group-item list-group-item-dark">Or you even can make a big post with pictures and formatting (in progress)</li>
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endwith %}
+{% endblock %}
