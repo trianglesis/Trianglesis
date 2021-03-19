@@ -4,7 +4,7 @@ billiard==3.6.0.0
 celery==4.3.0
 cffi==1.12.3
 confusable-homoglyphs==3.2.0
-Django==2.2.1
+Django==2.2.18
 django-bootstrap4==0.0.8
 django-celery-beat==1.4.0
 django-filter==2.1.0
