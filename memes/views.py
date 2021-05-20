@@ -462,6 +462,8 @@ class TubeViews:
 
         auth_user = AuthUser.objects.get(username=user_name)
 
+        auth_user = AuthUser.objects.get(user_name)
+
         if tubes_mode == 'popular':
             subject = 'All popular tubes of all times (in progress...)'
             tubes = MemesTubes.objects.filter(is_private__exact=False)
